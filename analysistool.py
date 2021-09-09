@@ -16,10 +16,10 @@ class analysistool:
 
     def thresholding(self,delthresh,wtthresh):
         # threshold only mutated strain
-        self.mutdf  = self.mutdf[self.mutdf.efficiency>delthresh]
+        self.mutdf  = self.mutdf[self.mutdf["efficiency"]>delthresh]
         self.mutdf.reset_index(drop=True,inplace=True)
 
-        self.wtdf = self.wtdf[self.wtdf.efficiency<wtthresh]
+        self.wtdf = self.wtdf[self.wtdf["efficiency"]<wtthresh]
         self.wtdf.reset_index(drop=True,inplace=True)
         return (self.mutdf,self.wtdf)
     
@@ -42,8 +42,6 @@ class analysistool:
             
       return deldf
 
-    #not used at the moment 
-    # if time optimize  
     def allignment(self):
 
         # get index range
@@ -134,9 +132,14 @@ class analysistool:
    
       return bindings
 
+    def labelchip(self,chipdf,chrdeldf):
+      chipdf["label"] = 0
+      for i,origin in chrdeldf.iterrows():
+        chipdf.loc[int(origin.x)-2500:int(origin.x)+2500,"label"]=1
+      return chipdf
 
     #  takes chip and thresholded puseq data to create the sequences of bindingsites
-    def labeldata(self,thresh,lowthresh,mutdf,wtdf,chipdf):
+    def createdataset(self,thresh,lowthresh,mutdf,wtdf,chipdf):
       bsdataset = []
       nonbsdataset = []
       labels = []
@@ -221,11 +224,6 @@ class analysistool:
             # add label to sequence
             nonbslabels.append(0)       
             state=False
-
-
-      #nbsdata = tensor.stack(nonbsdataset,dim=0)
-      # create one dataset with 50% bs and 50% nonbs
-      #dataset = torch.cat((bsdatatensor,nbsdata[:len(bsdataset)]) ,0)
   
       xpos = bsxset + nonbsxset
       dataset = bsdataset + nonbsdataset

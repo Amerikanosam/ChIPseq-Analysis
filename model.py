@@ -1,10 +1,4 @@
-import torch.nn as nn
-import torch.optim as optim
-import torch 
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-import random 
+
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
@@ -32,6 +26,7 @@ class seqmodel:
         self.model.add(Flatten()) 
         # repeat input to create 3-dimensional input
         self.model.add(RepeatVector(1000))
+        self.model.add(Dropout(0.5))
         self.model.add(LSTM(hiddenunits,go_backwards=True,return_sequences=False))
         self.model.add(Dense(denseunits,activation='relu'))
         self.model.add(Dense(1,activation='sigmoid'))
