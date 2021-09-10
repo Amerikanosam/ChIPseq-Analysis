@@ -178,6 +178,7 @@ class analysistool:
         signal = chipdf.loc[origin.x-2500:origin.x+2499,["x","norm"]]
         
         bsarray = np.array(signal["norm"].values,dtype=np.float32)
+        bsarray = bsarray.reshape(-1,1)
         # bin data
         for i in range(0,5000//5):
           bsarray[i] = np.mean(bsarray[i*5:(i+1)*5])
@@ -224,7 +225,8 @@ class analysistool:
             # add label to sequence
             nonbslabels.append(0) 
            
-  
+      print(len(bsdataset))
+      print(len(nonbsdataset))
       xpos = bsxset + nonbsxset
       dataset = bsdataset + nonbsdataset
       labels = labels + nonbslabels
