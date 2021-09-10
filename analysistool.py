@@ -1,4 +1,3 @@
-import torch
 import pandas as pd
 import random
 import numpy as np
@@ -178,14 +177,14 @@ class analysistool:
         chipdf.loc[origin.x-2500:origin.x+2499,"label"] =1
         signal = chipdf.loc[origin.x-2500:origin.x+2499,["x","norm"]]
         
-        bstensor = torch.tensor(signal["norm"].values,dtype=torch.float32)
+        bsarray = np.array(signal["norm"].values,dtype=np.float32)
         # bin data
         for i in range(0,5000//5):
-          bstensor[i] = torch.mean(bstensor[i*5:(i+1)*5])
-        bstensor=bstensor[:len(bstensor)//5]
-        bsx = torch.tensor(signal["x"].values,dtype=torch.float32)
+          bsarray[i] = np.mean(bsarray[i*5:(i+1)*5])
+        bsarray=bsarray[:len(bsarray)//5]
+        bsx = np.array(signal["x"].values)
         bsxset.append(bsx)
-        bsdataset.append(bstensor)
+        bsdataset.append(bsarray)
         labels.append(1)
         bindingsites.append(origin.x)
 
@@ -208,22 +207,23 @@ class analysistool:
           # as binding sites have been cropped
           # ensure that nonbinding site positions is a complete fragment
           if (signal.x.max()-signal.x.min()<5100) and (signal.norm.max()<3.5):
-
+            # change state +1 to nonbinding sites      
+            state=False
             #store read counts in tensor, cast float
-            nonbstensor = torch.tensor(signal["norm"].values,dtype=torch.float32)
+            nonbsarray = np.array(signal["norm"].values,dtype=np.float32)
             # bin data
             for i in range(0,5000//5):
-              nonbstensor[i] = torch.mean(nonbstensor[i*5:(i+1)*5])
-            nonbstensor = nonbstensor[:len(nonbstensor)//5]
+              nonbsarray[i] = np.mean(nonbsarray[i*5:(i+1)*5])
+            nonbsarray = nonbsarray[:len(nonbsarray)//5]
             
             #store positions in tensor, cast float
-            nonbsx = torch.tensor(signal["x"].values,dtype=torch.float32)     
+            nonbsx = np.array(signal["x"].values)     
             #append list of tensors
             nonbsxset.append(nonbsx)
-            nonbsdataset.append(nonbstensor)
+            nonbsdataset.append(nonbsarray)
             # add label to sequence
-            nonbslabels.append(0)       
-            state=False
+            nonbslabels.append(0) 
+           
   
       xpos = bsxset + nonbsxset
       dataset = bsdataset + nonbsdataset
