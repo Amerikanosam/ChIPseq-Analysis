@@ -212,6 +212,7 @@ class analysistool:
             state=False
             #store read counts in tensor, cast float
             nonbsarray = np.array(signal["norm"].values,dtype=np.float32)
+            nonbsarray = nonbsarray.reshape(-1,1)
             # bin data
             for i in range(0,5000//5):
               nonbsarray[i] = np.mean(nonbsarray[i*5:(i+1)*5])
