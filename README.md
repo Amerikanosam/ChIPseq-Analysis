@@ -1,17 +1,17 @@
 # ChIPseq-Analysis
 
-seqmodel.py contains CNN+LSTM model. 
-Seqmodel functions: Build a model 
-                    Train model 
-                    Evaluate results on confusion matrix
-                    Classify a sequence
+seqmodel.py contains CNN+LSTM model. <br>
+Seqmodel functions:<br> Build a model <br>
+                    Train model <br>
+                    Evaluate results on confusion matrix<br>
+                    Classify a sequence<br>
                    
-analysistool.py class used to preprocess ChIP and Pu-seq data
-Analysistool functions: Threshold origins based on efficiency
-                        Cleansing Pu-seq datasets
-                        Allignment between origins of different datasets
-                        Compute difference in efficiencies between two datasets
-                        Label a sequence in the ChIP dataset
-                        Create a balanced dataset of binding and non-binding sites from Pu-seq data
+analysistool.py class used to preprocess ChIP and Pu-seq data<br>
+Analysistool functions:<br> Threshold origins based on efficiency<br>
+                        Cleansing Pu-seq datasets<br>
+                        Allignment between origins of different datasets<br>
+                        Compute difference in efficiencies between two datasets<br>
+                        Label a sequence in the ChIP dataset<br>
+                        Create a balanced dataset of binding and non-binding sites from Pu-seq data<br>
                         
 ChIPseq sample notebook -> sample code to build and train model.
