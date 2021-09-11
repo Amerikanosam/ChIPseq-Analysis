@@ -9,10 +9,12 @@ class analysistool:
         self.mutdf = mutdf
         self.wtdf = wtdf
     
+    # remove null efficiency origins
     def  preprocess(self,deldf:pd.DataFrame) ->pd.DataFrame :
         deldf.dropna(inplace=True)
         return deldf
 
+    # threshold origin efficiencies
     def thresholding(self,delthresh,wtthresh):
         # threshold only mutated strain
         self.mutdf  = self.mutdf[self.mutdf["efficiency"]>delthresh]
@@ -41,6 +43,7 @@ class analysistool:
             
       return deldf
 
+    #allign rif1delete and wildtype origins
     def allignment(self):
 
         # get index range
@@ -121,9 +124,9 @@ class analysistool:
         return (self.mutdf,self.wtdf)
 
 
-
+    # remove origins with low difference in efficiencies
     def cutoffde(self, thresh,lowthresh,mutdf,wtdf):
-      #mutdf["defficiency"] = mutdf["efficiency"] - wtdf["efficiency"]
+      # binding site origins -> high diff efficiency
       bindingsdeff = mutdf[mutdf.deff>thresh]
       # extract completely suppressed origins
       bindingssup = mutdf[mutdf["deff"]==0]
@@ -131,8 +134,11 @@ class analysistool:
    
       return bindings
 
+    # label positions in chip data of binding sites
     def labelchip(self,chipdf,chrdeldf):
+      # initiate all locations non-binding sites
       chipdf["label"] = 0
+      # where origin label as binding site
       for i,origin in chrdeldf.iterrows():
         chipdf.loc[int(origin.x)-2500:int(origin.x)+2500,"label"]=1
       return chipdf
@@ -199,7 +205,7 @@ class analysistool:
       # create nonbinding dataset size of binding sites
       for i in range(len(bsdataset)):
         state=True
-        # while loop until correct sequence is acquired
+        # while loop until cohesive sequence is acquired
         while state:
           # select random index between 2500 and end of dataframe
           # limit 2500 to acquire 2500 previous positions
@@ -207,6 +213,7 @@ class analysistool:
           signal = non_bs_chip.loc[ind-2500:ind+2499,["x","norm"]]
           # as binding sites have been cropped
           # ensure that nonbinding site positions is a complete fragment
+          # correct fragment must span 5000 genomic loci
           if (signal.x.max()-signal.x.min()<5100) and (signal.norm.max()<3.5):
             # change state +1 to nonbinding sites      
             state=False
@@ -225,9 +232,7 @@ class analysistool:
             nonbsdataset.append(nonbsarray)
             # add label to sequence
             nonbslabels.append(0) 
-           
-      print(len(bsdataset))
-      print(len(nonbsdataset))
+
       xpos = bsxset + nonbsxset
       dataset = bsdataset + nonbsdataset
       labels = labels + nonbslabels
